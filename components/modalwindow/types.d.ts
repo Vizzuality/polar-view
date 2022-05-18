@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export interface ModalProps {
+export interface ModalWindowProps {
   /**
    * Title used by screen readers
    */

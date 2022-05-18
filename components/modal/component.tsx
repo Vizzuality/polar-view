@@ -1,123 +1,78 @@
-import { Children, FC, cloneElement, isValidElement, useRef } from 'react';
+import React, { FC, useCallback } from 'react';
 
-import cx from 'classnames';
+import Tippy, { TippyProps } from '@tippyjs/react/headless';
+import { useSpring, motion } from 'framer-motion';
+import { SpringOptions } from 'popmotion';
 
-import { useDialog } from '@react-aria/dialog';
-import { FocusScope } from '@react-aria/focus';
-import { useOverlay, usePreventScroll, useModal, OverlayContainer } from '@react-aria/overlays';
-import { AnimatePresence, motion } from 'framer-motion';
-
-import Icon from 'components/icon';
-
-import CLOSE_SVG from 'svgs/ui/close.svg?sprite';
-
-import { CONTENT_CLASSES, OVERLAY_CLASSES } from './constants';
-import type { ModalProps } from './types';
+interface MenuItem {
+  text?: string;
+  value?: string;
+}
+export interface ModalProps extends TippyProps {
+  items: MenuItem[];
+  maxWidth?: string | number;
+  children?: React.ReactElement;
+  onItemClick?: (item: MenuItem) => boolean | null;
+}
 
 export const Modal: FC<ModalProps> = ({
-  title,
-  open,
-  dismissable = true,
-  size = 'default',
+  items,
+  maxWidth = 250,
   children,
-  className,
-  onDismiss,
+  onItemClick,
+  placement = 'right-end',
+  content,
+  arrow = true,
+  ...props
 }: ModalProps) => {
-  const containerRef = useRef();
-  const { overlayProps } = useOverlay(
-    {
-      isKeyboardDismissDisabled: !dismissable,
-      isDismissable: dismissable,
-      isOpen: open,
-      onClose: onDismiss,
-    },
-    containerRef
-  );
-  const { modalProps } = useModal();
-  const { dialogProps } = useDialog({ 'aria-label': title }, containerRef);
+  const springConfig: SpringOptions = { damping: 15, stiffness: 300 };
+  const opacity = useSpring(0, springConfig);
+  const scale = useSpring(0.95, springConfig);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const tippyRef = React.useRef(null);
 
-  usePreventScroll({ isDisabled: !open });
+  const onMount = useCallback(() => {
+    scale.set(1);
+    opacity.set(1);
+  }, []);
+
+  const onHide = useCallback(({ unmount }) => {
+    setIsVisible(false);
+    const cleanup = scale.onChange((value) => {
+      if (value <= 0.95) {
+        cleanup();
+        unmount();
+      }
+    });
+
+    scale.set(0.95);
+    opacity.set(0);
+  }, []);
 
   return (
-    <AnimatePresence>
-      {open && (
-        <OverlayContainer>
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-              transition: {
-                delay: 0,
-              },
-            }}
-            exit={{
-              opacity: 0,
-              transition: {
-                delay: 0.125,
-              },
-            }}
-            className={cx({ [OVERLAY_CLASSES]: true })}
-          >
-            <FocusScope contain restoreFocus autoFocus>
-              <div {...overlayProps} {...dialogProps} {...modalProps} ref={containerRef}>
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: '-60%',
-                    x: '-50%',
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: '-50%',
-                    x: '-50%',
-                    transition: {
-                      delay: 0.125,
-                    },
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: '-60%',
-                    x: '-50%',
-                    transition: {
-                      delay: 0,
-                    },
-                  }}
-                  className={cx({ [CONTENT_CLASSES[size]]: true, [className]: !!className })}
-                  style={{
-                    maxHeight: '90%',
-                  }}
-                >
-                  {dismissable && (
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={onDismiss}
-                        className="absolute flex items-center px-4 py-4 text-sm text-gray-300 right-4 -top-4 focus:text-black hover:text-black"
-                      >
-                        <span className="text-xs"></span>
-                        <Icon icon={CLOSE_SVG} className="inline-block w-3 h-3 ml-2 text-black" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Children */}
-                  {Children.map(children, (child) => {
-                    if (isValidElement(child)) {
-                      return cloneElement(child, {
-                        onDismiss,
-                      });
-                    }
-                    return null;
-                  })}
-                </motion.div>
-              </div>
-            </FocusScope>
-          </motion.div>
-        </OverlayContainer>
+    <Tippy
+      {...props}
+      arrow={arrow}
+      placement={placement}
+      ref={tippyRef}
+      render={(attrs) => (
+        <motion.div style={{ scale, opacity, maxWidth: maxWidth || 'none' }} {...attrs}>
+          <div className="relative">
+            <div className="p-2 border border-mainblue bg-blur flex flex-col text-white text-tiny font-bolder space-y-2">
+              {content}
+            </div>
+          </div>
+        </motion.div>
       )}
-    </AnimatePresence>
+      onShow={() => setIsVisible(true)}
+      animation
+      onMount={onMount}
+      onHide={onHide}
+      trigger="click"
+      interactive
+    >
+      {React.cloneElement(children, { active: isVisible })}
+    </Tippy>
   );
 };
 

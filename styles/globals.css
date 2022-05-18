@@ -265,9 +265,18 @@
 .react-datepicker__day--keyboard-selected {
   @apply bg-mainblue text-white;
 }
+.react-datepicker__day {
+  @apply text-white outline-none;
+}
+.react-datepicker__day--today {
+  @apply text-orange2 bg-transparent
+}
 .react-datepicker__day--outside-month,
 .react-datepicker__day--disabled {
   @apply text-softerblue;
+}
+.react-datepicker__day--selected {
+  @apply bg-mainblue text-white;
 }
 
 input.radio:hover + div span {

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import Button from 'components/button';
 import Icon from 'components/icon';
-import Modal from 'components/modal';
+import ModalWindow from 'components/modalwindow';
 
 import type { ConfirmationPromptProps } from './types';
 
@@ -18,7 +18,7 @@ export const ConfirmationPrompt: FC<ConfirmationPromptProps> = ({
   onAccept,
   onRefuse,
 }: ConfirmationPromptProps) => (
-  <Modal open={open} title={title} size="narrow" dismissable={dismissible} onDismiss={onDismiss}>
+  <ModalWindow open={open} title={title} size="narrow" dismissable={dismissible} onDismiss={onDismiss}>
     <div className="px-8 py-4">
       <div className="mt-8 text-xl font-medium text-gray-800 leading-1 sm:mt-0 sm:pr-32 font-heading">
         {title}
@@ -45,7 +45,7 @@ export const ConfirmationPrompt: FC<ConfirmationPromptProps> = ({
         )}
       </div>
     </div>
-  </Modal>
+  </ModalWindow>
 );
 
 export default ConfirmationPrompt;

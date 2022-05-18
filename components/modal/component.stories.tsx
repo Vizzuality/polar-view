@@ -1,61 +1,46 @@
-import { useState } from 'react';
-
 import { Story } from '@storybook/react/types-6-0';
-
-import Modal, { ModalProps } from './index';
-import Button from 'components/button/component';
+import Button from 'components/button';
+import React from 'react';
+import Modal, { ModalProps } from './component';
 
 export default {
   title: 'Components/Modal',
   component: Modal,
-  parameters: { actions: { argTypesRegex: '^on.*' } },
-  argTypes: {
-    open: {
-      control: {
-        disable: true,
-      },
-    },
-    onDismiss: {
-      control: {
-        disable: true,
-      },
-    },
-  },
+  argTypes: {},
 };
 
-const Template: Story<ModalProps> = ({ ...args }: ModalProps) => {
-  const [open, setOpen] = useState(false);
-
+const Content: React.FC = () => {
   return (
-    <>
-      <Button theme="primary" size="medium" onClick={() => setOpen(true)}>
-        Open modal
-      </Button>
-      <Modal {...args} open={open} onDismiss={() => setOpen(false)} />
-    </>
+    <div className="relative">
+      <img src="/images/sampleice.jpeg" />
+
+      <div className="flex mt-3">
+        <div className="mr-1.5">
+          <Button  theme="primary">
+            View
+          </Button>
+        </div>
+
+        <Button className="" theme="primary">
+          Download
+        </Button>
+      </div>
+    </div>
   );
 };
 
-export const Default: Story<ModalProps> = Template.bind({});
+const Template: Story<ModalProps> = (args: ModalProps) => (
+  <div className="flex h-full justify-center items-center">
+    <Modal {...args}>
+      <button className="text-white border border-white px-3 py-1" type="button">
+        Modal Component
+      </button>
+    </Modal>
+  </div>
+);
+
+export const Default = Template.bind({});
+
 Default.args = {
-  title: 'Modal component',
-  dismissable: false,
-  children: (
-    <div className='relative h-full'>
-      <div className="text-white">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at sodales est, eu imperdiet
-        elit. Suspendisse eget diam accumsan, lacinia odio nec, fringilla ex. Quisque consectetur
-        diam in massa egestas, vitae posuere magna semper. Sed ac iaculis purus, at pretium tellus.
-        Duis non commodo lorem, non tincidunt ex.
-      </div>
-      <div className='flex absolute bottom-0'>
-        <div className="w-[80px] relative mr-2">
-          <Button theme="primary" cut='right-bottom'>View</Button>
-        </div>
-        <div className="w-[80px] relative">
-          <Button theme="primary">Download</Button>
-        </div>
-      </div>
-    </div>
-  ),
+  content: <Content />,
 };
