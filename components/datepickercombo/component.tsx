@@ -16,8 +16,10 @@ interface IReactDatePickerComboProps {
   options?: IRangeOption[];
   onChange?: (val: Date | number) => void;
 }
-
-type Ref = HTMLButtonElement;
+interface IDatePickerContainer {
+  options: IRangeOption[];
+  onChange?: (val: Date | number) => void;
+}
 
 const DefaultRangeOptions = [
   { label: 'LAST 24H.', value: -1 },
@@ -26,26 +28,29 @@ const DefaultRangeOptions = [
   { label: 'LAST 30 DAYS.', value: -30 },
 ];
 
-const DatePickerComboContainer = ({ children, options, onChange }) => {
-  return (
-    <div className="flex border border-mainblue bg-navyblue">
-      <div className="text-white text-tiny p-2">
-        {options.map((opt) => {
-          return (
-            <div
-              key={opt.label}
-              className="hover:bg-softerblue p-1 cursor-pointer"
-              onClick={() => onChange(opt.value)}
-            >
-              {opt.label}
-            </div>
-          );
-        })}
-      </div>
-      <div className="p-2 border-l border-mainblue">{children}</div>
+const DatePickerComboContainer: React.FC<IDatePickerContainer> = ({
+  children,
+  options,
+  onChange,
+}) => (
+  <div className="flex border border-mainblue bg-navyblue">
+    <div className="text-white text-tiny p-2">
+      {options.map((opt) => (
+        <div
+          key={opt.label}
+          tabIndex={0}
+          role="button"
+          className="hover:bg-softerblue p-1 cursor-pointer"
+          onClick={() => onChange(opt.value)}
+          onKeyDown={() => onChange(opt.value)}
+        >
+          {opt.label}
+        </div>
+      ))}
     </div>
-  );
-};
+    <div className="p-2 border-l border-mainblue">{children}</div>
+  </div>
+);
 
 const DatePickerCombo: React.FC<IReactDatePickerComboProps> = ({
   dateProps = { onChange: () => {} },
@@ -64,9 +69,15 @@ const DatePickerCombo: React.FC<IReactDatePickerComboProps> = ({
     onChange?.(value);
   }, [value]);
 
-  const { startDate, onChange: _onChange, placeholderText, disableToday, ...others } = dateProps;
-  const valIsN = value != undefined && typeof value === 'number';
-  const placeholder = valIsN ? options.find((m) => m.value == value).label : placeholderText;
+  const {
+    startDate,
+    onChange: onDatePropChange,
+    placeholderText,
+    disableToday,
+    ...others
+  } = dateProps;
+  const valIsN = value !== undefined && typeof value === 'number';
+  const placeholder = valIsN ? options.find((m) => m.value === value).label : placeholderText;
 
   return (
     <DatePicker

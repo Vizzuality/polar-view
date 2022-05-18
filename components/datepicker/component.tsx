@@ -64,7 +64,7 @@ const DatePicker: React.FC<IReactDatePickerProps> = ({
         setCurrentDate(date);
         onChange(date, event);
       }}
-      onClickOutside={()=> setisCalendarOpen(false)}
+      onClickOutside={() => setisCalendarOpen(false)}
       selected={showValue ? currentDate : null}
       onCalendarOpen={() => setisCalendarOpen(true)}
       onCalendarClose={() => setisCalendarOpen(false)}

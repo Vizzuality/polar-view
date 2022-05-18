@@ -9,25 +9,21 @@ export default {
   argTypes: {},
 };
 
-const Content: React.FC = () => {
-  return (
-    <div className="relative">
-      <img src="/images/sampleice.jpeg" />
+const Content: React.FC = () => (
+  <div className="relative">
+    <img src="/images/sampleice.jpeg" alt="sample ice" />
 
-      <div className="flex mt-3">
-        <div className="mr-1.5">
-          <Button  theme="primary">
-            View
-          </Button>
-        </div>
-
-        <Button className="" theme="primary">
-          Download
-        </Button>
+    <div className="flex mt-3">
+      <div className="mr-1.5">
+        <Button theme="primary">View</Button>
       </div>
+
+      <Button className="" theme="primary">
+        Download
+      </Button>
     </div>
-  );
-};
+  </div>
+);
 
 const Template: Story<ModalProps> = (args: ModalProps) => (
   <div className="flex h-full justify-center items-center">

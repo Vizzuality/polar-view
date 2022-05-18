@@ -41,7 +41,7 @@ Default.args = {
   title: 'Modal component',
   dismissable: false,
   children: (
-    <div className='relative h-full'>
+    <div className="relative h-full">
       <div className="text-white">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at sodales est, eu imperdiet
         elit. Suspendisse eget diam accumsan, lacinia odio nec, fringilla ex. Quisque consectetur
