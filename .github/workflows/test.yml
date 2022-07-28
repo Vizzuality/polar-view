@@ -4,11 +4,20 @@ on: [pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Running Cypress
+        uses: cypress-io/github-action@v4
+        timeout-minutes: 10
         with:
-          node-version: '14.x'
-      - run: yarn install
-      - run: yarn test
+          install-command: yarn install --immutable
+          browser: chrome
+          build: yarn workspace @polar-view/high-bandwith run build
+          start: yarn workspace @polar-view/high-bandwith run start
+          wait-on: 'http://localhost:3000'
+          config-file: packages/high-bandwith/cypress.json
+          command: yarn workspace @polar-view/high-bandwith run cypress:run
+        env:
+          NEXT_PUBLIC_LOW_BANDWITH_URL: 'http://localhost:3000'

@@ -1,10 +1,22 @@
 version: '3.9'
 services:
   high:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.high
     ports:
       - 3000:3000
-    command: yarn workspace @polar-view/high-bandwith
-    container_name: polar-view
+    command: yarn workspace @polar-view/high-bandwith start
+    container_name: polar-view-high
     environment:
-      - NEXT_PUBLIC_LOW_BANDWITH_URL=http://localhost:8080
+      - NEXT_PUBLIC_LOW_BANDWITH_URL=http://localhost:9000
+  low:
+    build:
+      context: .
+      dockerfile: Dockerfile.low
+    ports:
+      - 8080:9000
+    command: yarn workspace @polar-view/low-bandwith serve
+    container_name: polar-view-low
+    environment:
+      - HIGH_BANDWITH_URL=http://localhost:3000

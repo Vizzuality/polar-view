@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, AnchorHTMLAttributes, FC } from 'react';
+import { ButtonHTMLAttributes, AnchorHTMLAttributes } from 'react';
 
-import { LinkProps } from 'next/link';
+import type { LinkProps } from 'next/link';
 
 export interface AnchorButtonProps {
   theme: 'primary' | 'secondary' | 'info';
@@ -14,7 +14,7 @@ export interface AnchorButtonProps {
 // Button props
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   AnchorButtonProps & {
-    href?: undefined;
+    href?: string;
   };
 
 // Anchor props

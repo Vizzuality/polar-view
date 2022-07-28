@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-import { LinkProps } from 'next/link';
+import type { LinkProps } from 'next/link';
 
 export interface AnchorButtonProps {
   theme: 'primary' | 'secondary';
